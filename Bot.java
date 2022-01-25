@@ -18,11 +18,8 @@ public class Bot extends TeamRobot
 	 * run: Bot's default behavior
 	 */
 	public void run() {
-		// Initialization of the robot should be put here
-
-		// After trying out your robot, try uncommenting the import at the top,
-		// and the next line:
-
+	
+		// Team colors: All white with black body
 		setColors(Color.black,Color.white,Color.white); // body,gun,radar
 
 		while (true) {
@@ -30,37 +27,39 @@ public class Bot extends TeamRobot
 		}
 	}
 	/**
-	 * onScannedRobot: What to do when you see another robot
 	 * Parts from Sample Robot TrackFire
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Replace the next line with any behavior you would like
+		
+		// Find position of scanned Robot
 		double absoluteBearing = getHeading() + e.getBearing();
 		double gunBearing = normalRelativeAngleDegrees(absoluteBearing - getGunHeading());
 		double distance = e.getDistance();
-
+		// If accurate enough and within distance of 500, shoot hard with 3 
 		if (Math.abs(gunBearing) <= 3 && e.getDistance() < 500) {
 			turnGunRight(gunBearing);
 			fire(3);
 		}
+		// If accurate enough but at distance greater than 500, shoot lighter with 1
 		else if (Math.abs(gunBearing) <= 3 && e.getDistance() > 500) {
 			turnGunRight(gunBearing);
 			fire(1);
 		}
+		// Otherwise just scan
 		else {
 			turnGunRight(gunBearing);
 		}
-		// Generates another scan event if we see a robot.
+		// Generates another scan event if we see a robot
 		if (gunBearing == 0) {
 			scan();
 		}
 	}
-
 	/**
-	 * onHitByBullet: What to do when you're hit by a bullet
 	 * From Sample Robot Fire
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
+		// Move perpendicular to where bullet came from
 		turnRight(normalRelativeAngleDegrees(90 - (getHeading() - e.getHeading())));
 		ahead(dist);
 		dist *= -1;
